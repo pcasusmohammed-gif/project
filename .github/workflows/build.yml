@@ -6,24 +6,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
-      - name: Install Flet and Dependencies
+      - name: Install Flet
         run: |
           pip install flet
-          pip install -r requirements.txt
 
       - name: Build APK
         run: |
-          # This command downloads Flutter/Android SDKs automatically
-          flet build apk --verbose
-          
+          # The --assets flag tells Flet where your audio/images are
+          flet build apk --assets assets
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: flet-app-apk
+          name: MED-AUDIO-PRO-APK
           path: build/apk/*.apk
